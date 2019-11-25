@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>DUAL CONTROL MOTOR</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+        <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+       
+    </head>
+    <body>
+       
+       
+       <div id="Date"> <h4>Date: <span id="date"></span></h4></div>
+        <div  id="graphs"class="chart-container" style=" width:90vw; margin: auto; display: flex;flex-wrap: wrap">
+         <canvas id="myChart" class="chart"></canvas>
+            <canvas id="myChart2" class="chart"></canvas> 
+            <canvas id= "myChart3" class="chart"></canvas>
+            <canvas id="myChart4"class="chart"></canvas>
+            </div>
+            
+
+            <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+              <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+      
+               
+           <div id="motorOff" style="display: none">
+            <div style="margin:auto 29% ;">   
+            <img src="/images/motorOff.png" >
+            <h2 style="text-align: center;">Motor is off</h2>
+                </div>
+           </div>
+           <div class="row">   
+                        <div class="col-6">  
+                                        <form id="1" class="col-6">
+                                                               <button id="on" type="submit" class="btn btn-success">switch On</button>
+                  
+                   </form></div> 
+                   <div  class="col-6">
+                   <form id="2">
+                       
+                         <button id="off" class="btn btn-dark"type="submit">switch off</button>
+                        </form>  </div></div>
+                       
+                        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+                        <script src="https://code.jquery.com/jquery-3.4.1.js" ></script>
+                        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+                        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+         
+           
+           
+                    </body> 
+<script>
+$( document ).ready(function() {
+    $("#off").disabled=false;
+})
+                    $("#1").submit(function(event) {
+		// Prevent the form from submitting via the browser.
+		event.preventDefault();
+        $.ajax({
+			type : "POST",
+			contentType : "application/json",
+            url : window.location + "h",
+			dataType : 'json'
+		
+        });	
+        $('#graphs').show();
+        $('#Date').show();
+        $('#motorOff').hide();
+        this.disabled=true;
+        $("#on").hide();
+        $("#off").show();
+
+        $("#off").disabled=false;
+        
+    });
+        $("#2").submit(function(event) {
+		// Prevent the form from submitting via the browser.
+		event.preventDefault();
+        $.ajax({
+			type : "POST",
+			contentType : "application/json",
+            url : window.location + "l",
+			dataType : 'json'
+		
+        });
+        this.disabled=true;
+        $("#on").disabled=false;
+        $("#on").show();
+
+        $('#graphs').hide();
+        $('#Date').hide();
+        $('#motorOff').show();
+        $("#off").hide();
+
+    });
+</script>
+  <script>
+    var socket = io.connect('http://localhost:4000'); //connect to server
+
+    
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var chart = new Chart(ctx, {
+        // The type of chart we want to create
+        type: 'line',
+
+        // The data for our dataset
+        data: {
+        labels: [],
+        datasets: [{
+            label: "Temperature",
+            borderColor: "#FF5733",
+            data: [],
+            fill: false,
+            pointStyle: 'circle',
+            backgroundColor: '#3498DB',
+            pointRadius: 5,
+            pointHoverRadius: 7,
+            lineTension: 0,
+
+        }]
+        
+        },
+
+        // Configuration options go here
+        options : {
+            legend: {
+            labels: {
+                // This more specific font property overrides the global property
+                fontColor: 'black',
+                fontSize:25
+            }
+        },
+            scales: {
+yAxes: [{
+    ticks: {
+        max: 100,
+        min: 0,
+        stepSize: 10,
+        fontSize:25
+    }
+}],
+xAxes: [{
+    ticks: {
+      
+        fontSize:25
+    }
+}]
+}     
+    }});
+
+
+    var ampere = document.getElementById('myChart2').getContext('2d');
+    var amberchart = new Chart(ampere, {
+        // The type of chart we want to create
+        type: 'line',
+
+        // The data for our dataset
+        data: {
+        labels: [],
+        datasets: [{
+            label: "Ampere",
+            borderColor: "#FF5733",
+            data: [],
+            fill: false,
+            pointStyle: 'circle',
+            backgroundColor: '#3498DB',
+            pointRadius: 5,
+            pointHoverRadius: 7,
+            lineTension: 0,
+        }]
+        },
+
+        // Configuration options go here
+        options : {
+            legend: {
+            labels: {
+                // This more specific font property overrides the global property
+                fontColor: 'black',
+                fontSize:25
+            }
+        },
+scales: {
+yAxes: [{
+    ticks: {
+        max: 6,
+        min: 0,
+        stepSize: 1,
+        fontSize:25
+    }
+}],
+xAxes: [{
+    ticks: {
+      
+        fontSize:25
+    }
+}]
+}
+}
+        
+    });
+                  
+    var volt = document.getElementById('myChart3').getContext('2d');
+    var voltChart = new Chart(volt, {
+        // The type of chart we want to create
+        type: 'line',
+
+        // The data for our dataset
+        data: {
+        labels: [],
+        datasets: [{
+            label: "volt",
+            borderColor: "#FF5733",
+            data: [],
+            fill: false,
+            pointStyle: 'circle',
+            backgroundColor: '#3498DB',
+            pointRadius: 5,
+            pointHoverRadius: 7,
+            lineTension: 0,
+        }]
+        },
+
+        // Configuration options go here
+        options : {
+            legend: {
+            labels: {
+                // This more specific font property overrides the global property
+                fontColor: 'black',
+                fontSize:25
+            }
+        },
+scales: {
+yAxes: [{
+    ticks: {
+        max: 220,
+        min: 0,
+        stepSize: 20,
+        fontSize:25
+    }
+}],
+
+xAxes: [{
+    ticks: {
+      
+        fontSize:25
+    }
+}],
+}
+}
+        
+    });
+    var power = document.getElementById('myChart4').getContext('2d');
+    var powerChart = new Chart(power, {
+        // The type of chart we want to create
+        type: 'line',
+
+        // The data for our dataset
+        data: {
+        labels: [],
+        datasets: [{
+            label: "power",
+            borderColor: "#FF5733",
+            data: [],
+            fill: false,
+            pointStyle: 'circle',
+            backgroundColor: '#3498DB',
+            pointRadius: 5,
+            pointHoverRadius: 7,
+            lineTension: 0,
+        }]
+        },
+
+        // Configuration options go here
+         options : {
+            legend: {
+            labels: {
+                // This more specific font property overrides the global property
+                fontColor: 'black',
+                fontSize:25
+            }
+        },
+scales: {
+yAxes: [{
+    ticks: {
+        max: 1000,
+        min: 0,
+        stepSize: 100,
+        fontSize:25
+    }
+}],
+xAxes: [{
+    ticks: {
+      
+        fontSize:25
+    }
+}],
+}
+}
+
+        
+    }); 
+dtda = [],  // 1 x 3 array : [date, data1, data2] from DHT11
+
+
+socket.on('message', function(msg) { //As a temp data is received 
+    dtda[0]=msg[0];
+         dtda[1]=parseFloat(msg[1]);  // temperature
+        dtda[2]=parseFloat(msg[2]); // amper
+                         dtda[3]=msg[3];
+    dtda[4]=parseFloat(msg[4]); // volt
+    dtda[5]=parseFloat(msg[5]); // power
+    console.log(dtda[1]);
+        document.getElementById('date').innerHTML = dtda[0]; //update the date
+        if(chart.data.labels.length != 15) { //If we have less than 15 data points in the graph
+            chart.data.labels.push(dtda[3]);  //Add time in x-asix
+            chart.data.datasets.forEach((dataset) => {
+                dataset.data.push(  dtda[1]); //Add temp in y-axis
+            });
+        }
+        else { //If there are already 15 data points in the graph.
+            chart.data.labels.shift(); //Remove first time data
+            chart.data.labels.push(dtda[3]); //Insert latest time data
+            chart.data.datasets.forEach((dataset) => {
+                dataset.data.shift(); //Remove first temp data
+                dataset.data.push(  dtda[1]); //Insert latest temp data
+            });
+        }
+        if(amberchart.data.labels.length != 15) { //If we have less than 15 data points in the graph
+            amberchart.data.labels.push(dtda[3]);  //Add time in x-asix
+            amberchart.data.datasets.forEach((dataset) => {
+                dataset.data.push(  dtda[2]); //Add temp in y-axis
+            });
+        }
+        else { //If there are already 15 data points in the graph.
+            amberchart.data.labels.shift(); //Remove first time data
+            amberchart.data.labels.push(dtda[3]); //Insert latest time data
+            amberchart.data.datasets.forEach((dataset) => {
+                dataset.data.shift(); //Remove first temp data
+                dataset.data.push(  dtda[2]); //Insert latest temp data
+            });
+        }
+
+
+
+        if(voltChart.data.labels.length != 15) { //If we have less than 15 data points in the graph
+            voltChart.data.labels.push(dtda[3]);  //Add time in x-asix
+            voltChart.data.datasets.forEach((dataset) => {
+                dataset.data.push(  dtda[4]); //Add temp in y-axis
+            });
+        }
+        else { //If there are already 15 data points in the graph.
+            voltChart.data.labels.shift(); //Remove first time data
+            voltChart.data.labels.push(dtda[3]); //Insert latest time data
+            voltChart.data.datasets.forEach((dataset) => {
+                dataset.data.shift(); //Remove first temp data
+                dataset.data.push(  dtda[4]); //Insert latest temp data
+            });
+        }
+
+
+        if(powerChart.data.labels.length != 15) { //If we have less than 15 data points in the graph
+            powerChart.data.labels.push(dtda[3]);  //Add time in x-asix
+            powerChart.data.datasets.forEach((dataset) => {
+                dataset.data.push(  dtda[5]); //Add temp in y-axis
+            });
+        }
+        else { //If there are already 15 data points in the graph.
+            powerChart.data.labels.shift(); //Remove first time data
+            powerChart.data.labels.push(dtda[3]); //Insert latest time data
+            powerChart.data.datasets.forEach((dataset) => {
+                dataset.data.shift(); //Remove first temp data
+                dataset.data.push(  dtda[5]); //Insert latest temp data
+            });
+        }
+        amberchart.update();
+        voltChart.update();
+        powerChart.update();
+        chart.update(); //Update the graph.
+
+
+
+    });
+
+
+
+
+       </script>
+    <style>
+        .chart{
+            width: 50% !important;
+            display: inline;
+            height: 50% !important;
+            font-size: 5em !important;
+            font-weight: bold !important;
+        }
+       * {
+            text-align: center;
+            font-family: 'Lato', sans-serif;
+            font-size: 2em;
+        }
+
+        /* h4 {
+            text-align: center;
+            font-family: 'Lato', sans-serif;
+        }
+
+        p {
+            text-align: center;
+            font-family: 'Lato', sans-serif;
+        } */
+    </style>
+
+      
+</html>
